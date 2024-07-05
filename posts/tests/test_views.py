@@ -13,24 +13,25 @@ def api_client():
 
 @pytest.mark.django_db
 def test_post_list_create(api_client, one_post, user):
-    # Authenticate the API client
-    login_success = api_client.login(
-        username=user.username, password="testpassword"
+    response = api_client.post(
+        reverse("rest_login"),
+        {"username": user.username, "password": "testpassword"},
     )
-    assert login_success  # Ensure the login was successful
+    assert response.status_code == status.HTTP_200_OK
+    token = response.data["key"]
 
-    # Test GET request
+    api_client.credentials(HTTP_AUTHORIZATION="Token " + token)
+
     url = reverse("post_list")
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data) == 1
     assert response.data[0]["title"] == one_post.title
 
-    # Test POST request
     post_data = {
         "title": "New Post",
         "body": "This is a new post.",
-        "author": user.id,  # Use user ID instead of the user object
+        "author": user.id,
     }
     response = api_client.post(url, post_data, format="json")
     assert response.status_code == status.HTTP_201_CREATED

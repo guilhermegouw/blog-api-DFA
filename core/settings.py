@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth.registration",
     "corsheaders",
+    "drf_spectacular",
     # Local apps
     "accounts.apps.AccountsConfig",
     "posts.apps.PostsConfig",
@@ -151,6 +152,13 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Blog API Project",
+    "DESCRIPTION": "A sample blog to learn Django Rest Framework",
+    "VERSION": "1.0.0",
 }
 
 CORS_ORIGIN_WHITE_LIST = (
